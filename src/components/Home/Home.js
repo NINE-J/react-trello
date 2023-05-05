@@ -1,16 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import store from "../../utils/store";
 import InputContainer from "../InputContainer";
 import List from "../List";
 import { v4 as uuid } from "uuid";
-import { addDoc, arrayUnion, collection, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import StoreApi from "../../utils/storeApi";
 import { db, timestamp } from "../../firebase";
 import "./styles.scss";
 
 const Home = () => {
   const [lists, setLists] = useState(store.lists);
+
+  useEffect(() => {
+    const q = query(collection(db, "lists"), orderBy("timestamp", "asc"));
+    onSnapshot(q, (snapShot) => {
+      setLists(
+        snapShot.docs.map((doc) => {
+          return {
+            id: doc.id,
+            ...doc.data(),
+          };
+        })
+      );
+    });
+  }, []);
 
   const addMoreCard = async (title, listId) => {
     if (!title) {

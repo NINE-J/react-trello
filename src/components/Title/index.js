@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
-// import StoreApi from "../../utils/storeApi";
-import { ConnectingAirportsOutlined, MoreVert } from "@mui/icons-material";
+import React, { useState, useRef, useEffect, useContext } from "react";
+import storeApi from "../../utils/storeApi";
+import { MoreVert } from "@mui/icons-material";
 import "./styles.scss";
 
 const Title = ({ title, listId }) => {
@@ -10,6 +10,7 @@ const Title = ({ title, listId }) => {
   const [open, setOpen] = useState(false);
   const [openOptions, setOpenOptions] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
+  const { updateListTitle, deleteList } = useContext(storeApi);
 
   useEffect(() => {
     if (!openOptions || !refOptions.current) return;
@@ -28,6 +29,7 @@ const Title = ({ title, listId }) => {
   }, [openOptions]);
 
   const handleOnBlur = () => {
+    updateListTitle(newTitle, listId);
     setOpen((prev) => !prev);
   };
 
@@ -52,7 +54,9 @@ const Title = ({ title, listId }) => {
         </div>
       ) : (
         <div className="editable-title-container">
-          <h2 onClick={() => setOpen((prev) => !prev)}>{title}</h2>
+          <h2 className="editable-title" onClick={() => setOpen((prev) => !prev)}>
+            {title}
+          </h2>
           <button className="list-button" ref={refBtnToggleOptions} onClick={() => setOpenOptions((prev) => !prev)}>
             <MoreVert />
           </button>
@@ -62,7 +66,7 @@ const Title = ({ title, listId }) => {
                 <li
                   onClick={() => {
                     setOpenOptions(!openOptions);
-                    // deleteList(listId);
+                    deleteList(listId);
                   }}
                 >
                   Delete list
@@ -70,7 +74,7 @@ const Title = ({ title, listId }) => {
                 <li
                   onClick={() => {
                     setOpenOptions(!openOptions);
-                    // setOpen(!open);
+                    setOpen((prev) => !prev);
                   }}
                 >
                   Edit card title
