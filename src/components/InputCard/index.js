@@ -32,7 +32,13 @@ const InputCard = ({ setOpen, listId, type }) => {
         <button className="button-confirm" onClick={handleSubmit}>
           {type === "card" ? "Add Card" : "Add List"}
         </button>
-        <button className="button-cancel">
+        <button
+          className="button-cancel"
+          onClick={() => {
+            setTitle("");
+            setOpen(false);
+          }}
+        >
           <Clear />
         </button>
       </div>
